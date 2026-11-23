@@ -1,0 +1,10 @@
++STR
++DOC
++MAP
+=VAL :k
+=VAL &x :v
+=ALI *x
+=VAL :w
+-MAP
+-DOC
+-STR

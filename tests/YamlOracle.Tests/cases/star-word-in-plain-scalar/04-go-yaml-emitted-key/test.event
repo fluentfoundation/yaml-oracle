@@ -1,0 +1,13 @@
++STR
++DOC
++MAP
+=VAL :x
++MAP
+=VAL :$ *
+=VAL :87
+=VAL :y
+=VAL :1
+-MAP
+-MAP
+-DOC
+-STR

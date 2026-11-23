@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/YamlOracle/YamlOracle.csproj" />
+    <Project Path="src/YamlOracle.Worker/YamlOracle.Worker.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/YamlOracle.Tests/YamlOracle.Tests.csproj" />
+  </Folder>
+</Solution>

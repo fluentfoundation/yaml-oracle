@@ -1,0 +1,1 @@
+': ' after a word starting with * in a plain value is a nested mapping, which is invalid

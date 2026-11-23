@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Description>Parses YAML with libfyaml by P/Invoke, one input after another, for YamlOracle.LibFyaml.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../YamlOracle/YamlOracle.csproj" />
+  </ItemGroup>
+  <!-- the library eng/libfyaml.cmake built; without it, set YAML_ORACLE_LIBFYAML to one -->
+  <ItemGroup>
+    <None Include="$(NativeDir)*" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <Target Name="WarnWithoutLibfyaml" BeforeTargets="Build" Condition="!Exists('$(NativeDir)libfyaml.version')">
+    <Warning Text="No libfyaml in $(NativeDir): run 'cmake -P eng/libfyaml.cmake', or set YAML_ORACLE_LIBFYAML when running." />
+  </Target>
+</Project>

@@ -1,0 +1,4 @@
+info:
+  x-v:
+    a *b: 1
+    other: 2

@@ -1,0 +1,8 @@
++STR
++DOC
++MAP
+=VAL :d
+=VAL :a *b:c
+-MAP
+-DOC
+-STR

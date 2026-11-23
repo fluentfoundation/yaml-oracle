@@ -1,0 +1,10 @@
++STR
++DOC
++SEQ []
++MAP {}
+=VAL :a *b
+=VAL :c
+-MAP
+-SEQ
+-DOC
+-STR

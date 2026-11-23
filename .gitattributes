@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.cmd text eol=crlf
+# yaml-test-suite style cases: exact bytes matter
+tests/YamlOracle.Tests/cases/** -text

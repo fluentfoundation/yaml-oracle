@@ -1,0 +1,1 @@
+A plain scalar can't start with the reserved indicator '`', in a flow sequence

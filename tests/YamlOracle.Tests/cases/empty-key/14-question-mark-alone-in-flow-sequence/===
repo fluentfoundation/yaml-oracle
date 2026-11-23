@@ -1,0 +1,1 @@
+'?' alone in a flow sequence: an explicit key needs a blank after '?', and a plain scalar can't be '?' there

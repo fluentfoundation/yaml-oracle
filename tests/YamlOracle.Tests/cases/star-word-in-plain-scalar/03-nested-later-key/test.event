@@ -1,0 +1,13 @@
++STR
++DOC
++MAP
+=VAL :info
++MAP
+=VAL :first
+=VAL :0
+=VAL :a *b
+=VAL :1
+-MAP
+-MAP
+-DOC
+-STR

@@ -1,0 +1,8 @@
++STR
++DOC
++MAP
+=VAL :a
+=VAL |b\Nc\n
+-MAP
+-DOC
+-STR

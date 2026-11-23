@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Compares YamlDotNet's parse events with libfyaml's, a YAML 1.2 parser that passes the yaml-test-suite.</Description>
+  </PropertyGroup>
+  <!-- YamlDotNet under test: the package by default, or a source tree to evaluate a fix:
+       dotnet test -p:YamlDotNetSource=C:/src/YamlDotNet/YamlDotNet/YamlDotNet.csproj -->
+  <PropertyGroup>
+    <YamlDotNetVersion Condition="'$(YamlDotNetVersion)' == ''">18.1.0</YamlDotNetVersion>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(YamlDotNetSource)' == ''">
+    <PackageReference Include="YamlDotNet" Version="$(YamlDotNetVersion)" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(YamlDotNetSource)' != ''">
+    <ProjectReference Include="$(YamlDotNetSource)" SetTargetFramework="TargetFramework=net10.0" />
+  </ItemGroup>
+</Project>

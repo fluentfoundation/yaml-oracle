@@ -1,0 +1,1 @@
+A paragraph separator (U+2029) is a plain scalar's content in YAML 1.2, not a line break

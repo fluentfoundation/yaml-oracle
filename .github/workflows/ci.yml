@@ -1,0 +1,74 @@
+# Builds libfyaml (eng/libfyaml.cmake), checks our cases against the YAML reference parser, and runs the tests:
+# the yaml-test-suite through libfyaml and YamlDotNet, our cases, and the differential property (CsCheck_Time
+# seconds: a minute on pushes and pull requests, fifteen at night). The property keeps going past YamlDotNet
+# differences (YAML_ORACLE_KEEP_GOING): they and libfyaml's bugs are uploaded as kept-cases-<os>.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: How long the differential property searches, in seconds
+        default: "300"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    env:
+      CsCheck_Time: ${{ github.event_name == 'schedule' && '900' || inputs.seconds || '60' }}
+      # keep every YamlDotNet difference found (uploaded below) rather than failing on the first
+      YAML_ORACLE_KEEP_GOING: "1"
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Cache libfyaml
+        id: libfyaml
+        uses: actions/cache@v6
+        with:
+          path: artifacts/native
+          key: libfyaml-${{ runner.os }}-${{ hashFiles('eng/libfyaml.cmake') }}
+
+      - name: Build libfyaml
+        if: steps.libfyaml.outputs.cache-hit != 'true'
+        run: cmake -P eng/libfyaml.cmake
+
+      - name: Install the reference parser's dependencies
+        run: npm ci --prefix tools/reference
+
+      - name: Check our cases against the reference parser
+        run: node tools/reference/reference.js check tests/YamlOracle.Tests/cases
+
+      - name: Test
+        run: dotnet test --logger "console;verbosity=normal"
+
+      - name: Upload kept cases
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kept-cases-${{ matrix.os }}
+          path: TestResults/
+          if-no-files-found: ignore
