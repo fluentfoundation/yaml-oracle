@@ -26,7 +26,7 @@ public sealed record SuiteCase(string Id, string Dir, bool Lf = false)
     public override string ToString() => Id;
 }
 
-public static class Support
+public static partial class Support
 {
     public static string Root { get; } = FindRoot();
 
@@ -46,17 +46,23 @@ public static class Support
     /// <summary>Where a found difference is written, as a case directory (TestResults/differences).</summary>
     public static string DifferencesDir => Path.Combine(Root, "TestResults", "differences");
 
-    public static IReadOnlyList<SuiteCase> Cases(string root, bool lf = false)
+    public static IReadOnlyList<SuiteCase> Cases(string root, bool lf = false, Func<string, bool>? id = null)
     {
         if (!Directory.Exists(root)) return [];
         return Directory.EnumerateFiles(root, "in.yaml", SearchOption.AllDirectories)
             .Select(f => Path.GetDirectoryName(f)!)
             .Select(d => new SuiteCase(Path.GetRelativePath(root, d).Replace('\\', '/'), d, lf))
+            .Where(c => id is null || id(c.Id))
             .OrderBy(c => c.Id, StringComparer.Ordinal)
             .ToList();
     }
 
-    public static IReadOnlyList<SuiteCase> SuiteCases { get; } = Cases(SuiteDir, lf: true);
+    /// <summary>The suite's cases: XXXX or XXXX/NN. Its tags/ and name/ directories hold symlinks to the same cases
+    /// (followed where git checks symlinks out, as on CI's runners), which would count each case again.</summary>
+    public static IReadOnlyList<SuiteCase> SuiteCases { get; } = Cases(SuiteDir, lf: true, id => SuiteId().IsMatch(id));
+
+    [System.Text.RegularExpressions.GeneratedRegex(@"^[0-9A-Z]{4}(/[0-9]+)?$")]
+    private static partial System.Text.RegularExpressions.Regex SuiteId();
     public static IReadOnlyList<SuiteCase> OwnCases { get; } = Cases(CasesDir);
 
     /// <summary>The reference parser (tools/reference), or null when it can't run here: its dependencies aren't
